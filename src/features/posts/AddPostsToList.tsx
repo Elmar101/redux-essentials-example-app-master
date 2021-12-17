@@ -21,7 +21,8 @@ const AddPostsToList:React.FC<Props> = (props) => {
         setPostData({title: '', content: ''});
     }
     return (
-        <React.Fragment>
+        <div style={{margin: "auto", width:"50%"}}>
+            
             <h2> Add Post to PostLists </h2>
             <form>
                 <label> Post Title: </label>
@@ -39,7 +40,7 @@ const AddPostsToList:React.FC<Props> = (props) => {
                 />
                 <button onClick={ addingPostToList }> Add Post To List </button>
             </form>
-        </React.Fragment>
+        </div>
     )
 }
 

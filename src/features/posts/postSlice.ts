@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-interface IInitialStateData {
-    postsData: { id: number | string, title: string, content: string }[];
+export interface IPostsData {
+    id: number | string, title: string, content: string
+}
+export interface IInitialStateData {
+    postsData: IPostsData[];
 }
 
 interface IAction {
