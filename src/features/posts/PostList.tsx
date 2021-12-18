@@ -13,6 +13,9 @@ const PostList: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
             <h2>{post.title}</h2>
             <p>{post.content}</p>
             <Link to={`post/${post.id}`}> View Post </Link>
+            <br/>
+            <Link to={`editPost/${post.id}`}> Edit Post </Link>
+            <br/><br/>
         </div>
     ))
     return (

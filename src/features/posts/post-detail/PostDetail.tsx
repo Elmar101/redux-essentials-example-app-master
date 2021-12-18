@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { match } from "react-router-dom";
+import { Link, match } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { IPostsData } from "../postSlice";
@@ -18,12 +18,13 @@ export const PostDetail: React.FC<DetailsProps> = ({match}) =>{
    if(!post){
     return <i>  NOT FOUNT <b>"{postId}" </b> - postId of POST  </i>
    }
-    console.log("postId: ",postId, " post",post);
+    //console.log("postId: ",postId, " post",post);
     return(
         <React.Fragment>
             <h1> {post?.id} - Post Detail </h1>
             <h3> {post?.title} </h3>
             <p> {post?.content} </p>
+            <Link to={`/editPost/${post.id}`}> Edit Post </Link>
         </React.Fragment>
     )
 }
