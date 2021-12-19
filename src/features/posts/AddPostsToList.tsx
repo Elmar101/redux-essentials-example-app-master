@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '../../app/store';
 import { addPost } from "./postSlice";
-import {nanoid} from "@reduxjs/toolkit";
+/* import {nanoid} from "@reduxjs/toolkit"; */
 interface Props {}
 const AddPostsToList:React.FC<Props> = (props) => {
     const [postData, setPostData] = useState({title: '', content:''});
@@ -16,7 +16,9 @@ const AddPostsToList:React.FC<Props> = (props) => {
     const addingPostToList = (e:any) => {
         e.preventDefault();
         if(postData.title && postData.content){
-            dispatch(addPost({id: nanoid(),title: postData.title, content: postData.content}));
+            /* dispatch(addPost({id: nanoid(),title: postData.title, content: postData.content})); */
+            dispatch(addPost(postData.title, postData.content));
+            
         }
         setPostData({title: '', content: ''});
     }
