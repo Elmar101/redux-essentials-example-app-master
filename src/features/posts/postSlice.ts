@@ -38,25 +38,26 @@ export const postSlice = createSlice({
     },
 
     updatePost: (state: IInitialStateData, action: IAction) => {
-      const { id, title, content } = action.payload
-      const existingPostData: IPostsData | undefined = state.postsData.find(
-        (post) => post.id == id
-      )
+      const { id, title, content } = action.payload;
+      /* 
+        const existingPostData: IPostsData | undefined = state.postsData.find(
+            (post) => post.id == id
+        )
 
-      /*  if(existingPostData){
+       if(existingPostData){
                 existingPostData.title = title;
                 existingPostData.content = content;
-            } */
+        } 
+        */
       return {
         ...state,
-        postsData: existingPostData
-          ? state.postsData.map((post) => {
-              if (existingPostData) {
+        postsData: state.postsData.map((post) => {
+           // console.log("b=",post.id.toString()===id.toString())
+              if (post.id.toString() === id.toString()) {
                 return { ...post, id: id, title: title, content: content }
               }
               return post
-            })
-          : [...state.postsData],
+        })
       }
     },
   },
