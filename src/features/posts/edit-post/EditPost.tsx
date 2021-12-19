@@ -16,7 +16,7 @@ function EditPost({ match }: Props) {
 
     const dispatch: Dispatch = useDispatch();
     const posts: IPostsData[] = useSelector((state: RootState) => state.posts.postsData);
-    const post: IPostsData | undefined = useMemo(() => posts.find(post => post.id.toString() === postId), [])
+    const post: IPostsData | undefined = useMemo(() => posts.find(post => post.id.toString() === postId), [postId,posts])
 
     console.log("EDIT POST: ", post)
     const [postObj, setPostObj] = useState({ title: post?.title, content: post?.content });
