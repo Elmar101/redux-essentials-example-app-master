@@ -35,7 +35,8 @@ function EditPost({ match }: Props) {
     const saveEditPost = (e: any) => {
         e.preventDefault();
         if (postObj.title && postObj.content) {
-            dispatch( updatePost( { id:postId.toString(), title: postObj.title , content: postObj.content } ) );
+            //dispatch( updatePost( { id:postId.toString(), title: postObj.title , content: postObj.content } ) );
+            dispatch( updatePost( postId.toString(), postObj.title , postObj.content ) );
             history.push("/");
         }
     }

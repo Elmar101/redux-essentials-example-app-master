@@ -10,7 +10,7 @@ export interface IInitialStateData {
 }
 export interface IPREPARE {
         payload: {
-            id: string;
+            id: string | number;
             title: any;
             content: any;
             meta?: string;
@@ -69,9 +69,9 @@ export const postSlice = createSlice({
             }
         },
 
-        updatePost: (state: IInitialStateData, action: IAction) => {
+        /* updatePost: (state: IInitialStateData, action: IAction) => {
             const { id, title, content } = action.payload;
-            /* 
+            // 
               const existingPostData: IPostsData | undefined = state.postsData.find(
                   (post) => post.id == id
               )
@@ -80,7 +80,7 @@ export const postSlice = createSlice({
                       existingPostData.title = title;
                       existingPostData.content = content;
               } 
-              */
+              //
             return {
                 ...state,
                 postsData: state.postsData.map((post) => {
@@ -91,7 +91,27 @@ export const postSlice = createSlice({
                     return post
                 })
             }
-        },
+        }, */
+
+        updatePost: {
+            reducer:(state: IInitialStateData, action: IAction): IAddReducer=> {
+                const { id, title, content } = action.payload;
+                return {
+                    ...state,
+                    postsData: state.postsData.map((post) => {
+                        if (post.id.toString() === id.toString()) {
+                            return { ...post, id: id, title: title, content: content }
+                        }
+                        return post
+                    })
+                }
+            },
+            prepare: (id, title, content):IPREPARE => {
+                return {
+                    payload: {id, title, content}
+                }
+            }
+        }
     },
 })
 export const { addPost, updatePost } = postSlice.actions
