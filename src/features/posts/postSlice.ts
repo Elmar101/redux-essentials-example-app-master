@@ -1,35 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { nanoid } from "@reduxjs/toolkit";
+import { sub } from "date-fns";
 export interface IPostsData {
     id: number | string
     title: string
-    content: string
+    content: string,
+    userId: string,
+    date: Date | string
 }
+
 export interface IInitialStateData {
     postsData: IPostsData[]
 }
 export interface IPREPARE {
-        payload: {
-            id: string | number;
-            title: any;
-            content: any;
-            meta?: string;
-            error?: boolean;
-        } 
+    payload: {
+        id: string | number;
+        title: any;
+        content: any;
+        userId: any;
+        date?: Date | string;
+        meta?: string;
+        error?: boolean;
+    }
 }
 
 export interface IAddReducer {
     postsData: IPostsData[];
 }
-
 interface IAction {
-    payload: { id: number | string; title: string; content: string }
+    payload: { id: number | string; title: string; content: string; userId: string, date?: Date | string }
 }
 
 const initialState: IInitialStateData = {
     postsData: [
-        { id: 1, title: 'first post', content: 'Hello' },
-        { id: 2, title: 'second post', content: 'Hello Text' },
+        { id: 1, title: 'first post', content: 'Hello', userId: "", date: sub(new Date(), { minutes: 10 }).toISOString() },
+        { id: 2, title: 'second post', content: 'Hello Text', userId: "", date: sub(new Date(), { minutes: 5 }).toISOString() },
     ],
 }
 
@@ -37,7 +42,52 @@ export const postSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        /*  addPost: (state: IInitialStateData, action: IAction) => {
+        addPost: {
+            reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
+                const { id, title, content, userId, date } = action.payload;
+                return {
+                    ...state,
+                    postsData: [
+                        ...state.postsData,
+                        { id, title, content, userId, date: date ? date : " " },
+                    ],
+                }
+            },
+            prepare: (title, content, userId): IPREPARE => {
+                return {
+                    payload: { id: nanoid(), title, content, userId, date: new Date().toISOString(), meta: " Additional Information ", error: false }
+                }
+            }
+        },
+
+        updatePost: {
+            reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
+                const { id, title, content, userId } = action.payload;
+                return {
+                    ...state,
+                    postsData: state.postsData.map((post) => {
+                        if (post.id.toString() === id.toString()) {
+                            return { ...post, id, title, content, userId }
+                        }
+                        return post
+                    })
+                }
+            },
+            prepare: (id, title, content, userId): IPREPARE => {
+                return {
+                    payload: { id, title, content, userId }
+                }
+            }
+        }
+    },
+})
+export const { addPost, updatePost } = postSlice.actions
+export default postSlice.reducer
+
+//map bize yeni state verir
+//immer ise yox
+
+/*  addPost: (state: IInitialStateData, action: IAction) => {
            return {
              ...state,
              postsData: [
@@ -51,25 +101,7 @@ export const postSlice = createSlice({
            }
          }, */
 
-        addPost: {
-            reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
-                const { id, title, content } = action.payload;
-                return {
-                    ...state,
-                    postsData: [
-                        ...state.postsData,
-                        { id, title, content },
-                    ],
-                }
-            },
-            prepare: (title, content): IPREPARE => {
-                return {
-                    payload: { id: nanoid(), title, content, meta: " Additional Information ", error: false }
-                }
-            }
-        },
-
-        /* updatePost: (state: IInitialStateData, action: IAction) => {
+/* updatePost: (state: IInitialStateData, action: IAction) => {
             const { id, title, content } = action.payload;
             // 
               const existingPostData: IPostsData | undefined = state.postsData.find(
@@ -93,29 +125,3 @@ export const postSlice = createSlice({
             }
         }, */
 
-        updatePost: {
-            reducer:(state: IInitialStateData, action: IAction): IAddReducer=> {
-                const { id, title, content } = action.payload;
-                return {
-                    ...state,
-                    postsData: state.postsData.map((post) => {
-                        if (post.id.toString() === id.toString()) {
-                            return { ...post, id: id, title: title, content: content }
-                        }
-                        return post
-                    })
-                }
-            },
-            prepare: (id, title, content):IPREPARE => {
-                return {
-                    payload: {id, title, content}
-                }
-            }
-        }
-    },
-})
-export const { addPost, updatePost } = postSlice.actions
-export default postSlice.reducer
-
-//map bize yeni state verir
-//immer ise yox

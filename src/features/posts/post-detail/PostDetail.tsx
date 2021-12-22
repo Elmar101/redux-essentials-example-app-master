@@ -3,6 +3,8 @@ import { Link, match } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { IPostsData } from "../postSlice";
+import PostAuthor from "../post-author/PostAuthor";
+import TimeAgoPost from "../time-ago-post/TimeAgoPost";
 
 interface DetailParams {
     postId: string;
@@ -23,6 +25,8 @@ export const PostDetail: React.FC<DetailsProps> = ({match}) =>{
         <React.Fragment>
             <h1> {post?.id} - Post Detail </h1>
             <h3> {post?.title} </h3>
+            <PostAuthor userId={post.userId}/>
+            <TimeAgoPost timeStamp={post.date}/>
             <p> {post?.content} </p>
             <Link to={`/editPost/${post.id}`}> Edit Post </Link>
         </React.Fragment>
