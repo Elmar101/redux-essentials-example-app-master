@@ -5,6 +5,7 @@ import { RootState } from '../../../app/store';
 import { IPostsData } from "../postSlice";
 import PostAuthor from "../post-author/PostAuthor";
 import TimeAgoPost from "../time-ago-post/TimeAgoPost";
+import ReactionButtonPost from '../reaction-button-post/ReactionButtonPost';
 
 interface DetailParams {
     postId: string;
@@ -27,6 +28,7 @@ export const PostDetail: React.FC<DetailsProps> = ({match}) =>{
             <h3> {post?.title} </h3>
             <PostAuthor userId={post.userId}/>
             <TimeAgoPost timeStamp={post.date}/>
+            <ReactionButtonPost post={post}/>
             <p> {post?.content} </p>
             <Link to={`/editPost/${post.id}`}> Edit Post </Link>
         </React.Fragment>

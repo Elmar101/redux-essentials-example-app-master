@@ -1,21 +1,20 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { useHistory } from 'react-router-dom'
 import PostAuthor from './post-author/PostAuthor'
 import TimeAgoPost from './time-ago-post/TimeAgoPost'
 import ReactionButtonPost from './reaction-button-post/ReactionButtonPost'
+import { IPostsData } from './postSlice';
 interface Props {}
+
 const PostList: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
-  const history = useHistory()
-  const statePosts = useSelector((state: RootState) => state.posts.postsData)
-  useEffect(() => {
-    console.log('posts: ', orderSortPost)
-  })
-  const orderSortPost = [...statePosts].sort((a, b) =>
-    b.date.toString().localeCompare(a.date.toString())
-  )
-  const renderPosts = orderSortPost.map((post) => (
+  const history = useHistory();
+  const statePosts = useSelector((state: RootState) => state.posts.postsData);
+  
+  const orderSortPost = [...statePosts].sort( (a, b) => b.date.toString().localeCompare(a.date.toString()) )
+
+  const renderPosts: JSX.Element[] = orderSortPost.map((post: IPostsData) => (
     <div key={post.id} style={{ borderBottom: '1px solid gray' }}>
       <h2>{post.title}</h2>
       <PostAuthor userId={post.userId} />
@@ -58,4 +57,4 @@ const PostList: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
   )
 }
 
-export default PostList
+export default PostList;

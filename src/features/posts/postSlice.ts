@@ -2,54 +2,11 @@ import { createSlice } from '@reduxjs/toolkit'
 import { nanoid } from '@reduxjs/toolkit'
 import { sub } from 'date-fns'
 export interface IPostsData {
-  id: number | string
-  title: string
-  content: string
-  userId: string
-  date: Date | string
-  reactions?: {
-    [index: string]: number | undefined;
-    thumbsUp?: number
-    hooray?: number
-    heart?: number
-    rocket?: number
-    eyes?: number
-}
-}
-
-export interface IInitialStateData {
-  postsData: IPostsData[]
-}
-export interface IPREPARE {
-  payload: {
-    id: string | number
-    title: any
-    content: any
-    userId: any
-    date?: Date | string
-    meta?: string
-    error?: boolean,
-    reactions?: {
-        [index: string]: number | undefined;
-        thumbsUp?: number
-        hooray?: number
-        heart?: number
-        rocket?: number
-        eyes?: number
-    }
-  }
-}
-
-export interface IAddReducer {
-  postsData: IPostsData[]
-}
-interface IAction {
-  payload: {
     id: number | string
     title: string
     content: string
     userId: string
-    date?: Date | string,
+    date: Date | string
     reactions?: {
         [index: string]: number | undefined;
         thumbsUp?: number
@@ -58,7 +15,50 @@ interface IAction {
         rocket?: number
         eyes?: number
     }
-  }
+}
+
+export interface IInitialStateData {
+    postsData: IPostsData[]
+}
+export interface IPREPARE {
+    payload: {
+        id: string | number
+        title: any
+        content: any
+        userId: any
+        date?: Date | string
+        meta?: string
+        error?: boolean,
+        reactions?: {
+            [index: string]: number | undefined;
+            thumbsUp?: number
+            hooray?: number
+            heart?: number
+            rocket?: number
+            eyes?: number
+        }
+    }
+}
+
+export interface IAddReducer {
+    postsData: IPostsData[]
+}
+interface IAction {
+    payload: {
+        id: number | string
+        title: string
+        content: string
+        userId: string
+        date?: Date | string,
+        reactions?: {
+            [index: string]: number | undefined;
+            thumbsUp?: number
+            hooray?: number
+            heart?: number
+            rocket?: number
+            eyes?: number
+        }
+    }
 }
 
 export interface IPREPARE_REACTION {
@@ -76,64 +76,13 @@ interface IACTION_REACTION {
 }
 
 const initialState: IInitialStateData = {
-  postsData: [
-    {
-      id: 1,
-      title: 'first post',
-      content: 'Hello',
-      userId: '',
-      date: sub(new Date(), { minutes: 10 }).toISOString(),
-      reactions: {
-        thumbsUp: 0,
-        hooray: 0,
-        heart: 0,
-        rocket: 0,
-        eyes: 0,
-      }
-    },
-    {
-      id: 2,
-      title: 'second post',
-      content: 'Hello Text',
-      userId: '',
-      date: sub(new Date(), { minutes: 5 }).toISOString(),
-      reactions: {
-        thumbsUp: 0,
-        hooray: 0,
-        heart: 0,
-        rocket: 0,
-        eyes: 0,
-      }
-    },
-  ],
-}
-
-export const postSlice = createSlice({
-  name: 'posts',
-  initialState,
-  reducers: {
-    /*/----------- AddPost START-------------/*/
-    addPost: {
-      reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
-        const { id, title, content, userId, date, reactions } = action.payload
-        return {
-          ...state,
-          postsData: [
-            ...state.postsData,
-            { id, title, content, userId, date: date ? date : ' ', reactions: typeof reactions !== "undefined" ? {...reactions} : undefined },
-          ],
-        }
-      },
-      prepare: (title, content, userId): IPREPARE => {
-        return {
-          payload: {
-            id: nanoid(),
-            title,
-            content,
-            userId,
-            date: new Date().toISOString(),
-            meta: ' Additional Information ',
-            error: false,
+    postsData: [
+        {
+            id: 1,
+            title: 'first post',
+            content: 'Hello',
+            userId: '',
+            date: sub(new Date(), { minutes: 10 }).toISOString(),
             reactions: {
                 thumbsUp: 0,
                 hooray: 0,
@@ -141,69 +90,118 @@ export const postSlice = createSlice({
                 rocket: 0,
                 eyes: 0,
             }
-          },
-        }
-      },
-    },
-    /*/----------- AddPost END -------------/*/
-
-    /*/----------- UpdatePost START-------------/*/
-    updatePost: {
-      reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
-        const { id, title, content, userId } = action.payload
-        return {
-          ...state,
-          postsData: state.postsData.map((post) => {
-            if (post.id.toString() === id.toString()) {
-              return { ...post, id, title, content, userId }
+        },
+        {
+            id: 2,
+            title: 'second post',
+            content: 'Hello Text',
+            userId: '',
+            date: sub(new Date(), { minutes: 5 }).toISOString(),
+            reactions: {
+                thumbsUp: 0,
+                hooray: 0,
+                heart: 0,
+                rocket: 0,
+                eyes: 0,
             }
-            return post
-          }),
-        }
-      },
-      prepare: (id, title, content, userId): IPREPARE => {
-        return {
-          payload: { id, title, content, userId },
-        }
-      },
-    },
+        },
+    ],
+}
 
-    /*/----------- UpdatePost END-------------/*/
+export const postSlice = createSlice({
+    name: 'posts',
+    initialState,
+    reducers: {
+        /*/----------- AddPost START-------------/*/
+        addPost: {
+            reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
+                const { id, title, content, userId, date, reactions } = action.payload;
+                return {
+                    ...state,
+                    postsData: [
+                        ...state.postsData,
+                        { id, title, content, userId, date: date ? date : ' ', reactions },
+                    ],
+                }
+            },
+            prepare: (title: string, content: string, userId: string): IPREPARE => {
+                return {
+                    payload: {
+                        id: nanoid(),
+                        title,
+                        content,
+                        userId,
+                        date: new Date().toISOString(),
+                        meta: ' Additional Information ',
+                        error: false,
+                        reactions: {
+                            thumbsUp: 0,
+                            hooray: 0,
+                            heart: 0,
+                            rocket: 0,
+                            eyes: 0,
+                        }
+                    },
+                }
+            },
+        },
+        /*/----------- AddPost END -------------/*/
 
-    /*/----------- ReactionsAdded START-------------/*/
-    reactionsAdded:{
-        reducer:(state: IInitialStateData, action: IACTION_REACTION)=>{
-            const {postId, reactionName} = action.payload;
-            console.log(reactionName)
-            return {
-                ...state,
-                postsData: state.postsData.map(post=>{
-                    //console.log(reactionName,":",(post.reactions?.[reactionName] as number)++)
-                    if(post.id.toString() === postId.toString()){
-                        return {
-                            ...post,
-                            reactions:{
-                                ...post.reactions,
-                                [reactionName]: (post.reactions?.[reactionName] as number) + 1
+        /*/----------- UpdatePost START-------------/*/
+        updatePost: {
+            reducer: (state: IInitialStateData, action: IAction): IAddReducer => {
+                const { id, title, content, userId } = action.payload
+                return {
+                    ...state,
+                    postsData: state.postsData.map((post) => {
+                        if (post.id === id) {
+                            return { ...post, id, title, content, userId }
+                        }
+                        return post
+                    }),
+                }
+            },
+            prepare: (id: string, title: string, content: string, userId: string): IPREPARE => {
+                return {
+                    payload: { id, title, content, userId, meta:"", error: false },
+                }
+            },
+        },
+
+        /*/----------- UpdatePost END-------------/*/
+
+        /*/----------- ReactionsAdded START-------------/*/
+        reactionsAdded: {
+            reducer: (state: IInitialStateData, action: IACTION_REACTION) => {
+                const { postId, reactionName } = action.payload;
+                return {
+                    ...state,
+                    postsData: state.postsData.map(post => {
+                        if (post.id === postId) {
+                            return {
+                                ...post,
+                                reactions: {
+                                    ...post.reactions,
+                                    [reactionName]: (post.reactions?.[reactionName] as number) + 1
+                                }
                             }
                         }
-                    }
-                    return post
-                })
-            }
+                        return post
+                    })
+                }
 
-        },
-        prepare: (postId: string, reactionName: string): IPREPARE_REACTION => {
-            return {
-                payload: {postId, reactionName}
+            },
+            prepare: (postId: string, reactionName: string): IPREPARE_REACTION => {
+                return {
+                    payload: { postId, reactionName }
+                }
             }
-        }
+        },
+        /*/----------- ReactionsAdded END-------------/*/
     },
-    /*/----------- ReactionsAdded END-------------/*/
-  },
 })
-export const { addPost, updatePost, reactionsAdded } = postSlice.actions
-export default postSlice.reducer
+export const { addPost, updatePost, reactionsAdded } = postSlice.actions;
+export default postSlice.reducer;
 
 //map bize yeni state verir
 //immer ise yox
