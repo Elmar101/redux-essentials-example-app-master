@@ -2,9 +2,9 @@ import React, { ChangeEvent, useMemo, useState } from 'react'
 import { match, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../../app/store'
-import { IPostsData } from '../postSlice'
-import { updatePost } from '../postSlice'
 import { IInitialUserState } from '../../users/usersSlice'
+import { Post } from '../post';
+import { updatePost } from '../postSlice'
 interface IParamsId {
   postId: string
 }
@@ -17,14 +17,14 @@ function EditPost({ match }: Props) {
 
   const dispatch: Dispatch = useDispatch();
   const users: IInitialUserState[] = useSelector( (state: RootState) => state.users );
-  const posts: IPostsData[] = useSelector( (state: RootState) => state.posts.postsData );
+  const posts: Post[] = useSelector( (state: RootState) => state.posts.posts );
 
-  const post: IPostsData | undefined = useMemo(() =>posts.find((post)=>post.id.toString()===postId),[postId,posts]);
+  const post: Post | undefined= useMemo(() =>posts.find((post)=>post.id === postId),[postId,posts]);
 
   const [postObj, setPostObj] = useState({
     title: post?.title,
     content: post?.content,
-    userId: post!.userId,
+    userId: post?.id,
   })
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -50,7 +50,6 @@ function EditPost({ match }: Props) {
   const saveEditPost = (e: any) => {
     e.preventDefault()
     if (postObj.title && postObj.content) {
-      //dispatch( updatePost( { id:postId.toString(), title: postObj.title , content: postObj.content } ) );
       dispatch(
         updatePost(
           postId.toString(),

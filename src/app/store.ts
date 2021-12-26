@@ -11,9 +11,3 @@ export const store =  configureStore({
     users: usersReducer
   },
 })
-
-
-
-export const postsState = (state: RootState ) => state.posts;
-export const postsStateData = (state: RootState ) => state.posts.postsData;
-export const usersState = (state: RootState ) => state.users;
