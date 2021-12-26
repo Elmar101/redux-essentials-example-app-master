@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch, RootState } from '../../app/store';
-import { addPost } from "./postSlice";
-/* import {nanoid} from "@reduxjs/toolkit"; */
+import { Dispatch, RootState } from '../../../app/store';
+import { addPost } from '../postSlice';
+
 interface Props {}
+
 const AddPostsToList:React.FC<Props> = (props) => {
     const [postData, setPostData] = useState({title: '', content:'', userId: ''});
     const users = useSelector((state:RootState)=>state.users);
@@ -16,9 +17,7 @@ const AddPostsToList:React.FC<Props> = (props) => {
     const addingPostToList = (e:any) => {
         e.preventDefault();
         if(postData.title && postData.content){
-            /* dispatch(addPost({id: nanoid(),title: postData.title, content: postData.content})); */
-            dispatch(addPost(postData.title, postData.content, postData.userId));
-            
+            dispatch(addPost(postData.title, postData.content, postData.userId)); 
         }
         setPostData({title: '', content: '', userId: ''});
     }
@@ -57,4 +56,4 @@ const AddPostsToList:React.FC<Props> = (props) => {
     )
 }
 
-export default AddPostsToList;
+export default AddPostsToList

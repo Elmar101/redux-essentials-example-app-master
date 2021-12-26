@@ -7,10 +7,11 @@ import {
 } from 'react-router-dom'
 
 import { Navbar } from './app/Navbar'
-import PostList from './features/posts/PostList'
-import AddPostsToList from './features/posts/AddPostsToList'
+import EditPost from './features/posts/edit-post/EditPost'
 import { PostDetail } from './features/posts/post-detail/PostDetail'
-import EditPost from './features/posts/edit-post/EditPost';
+import AddPostsToList from './features/posts/post-form/AddPostsToList'
+import PostList from './features/posts/PostList'
+
 function App() {
   return (
     <Router>
@@ -29,8 +30,8 @@ function App() {
           />
 
           <Route exact path="/post/:postId" component={PostDetail} />
-
-          <Route exact path="/editPost/:postId" component={EditPost} />
+ 
+          <Route exact path="/editPost/:postId" component={EditPost} /> 
           <Redirect to="/" />
         </Switch>
       </div>
