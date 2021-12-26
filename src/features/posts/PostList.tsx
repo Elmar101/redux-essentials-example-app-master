@@ -6,6 +6,7 @@ import { Post } from './post';
 import PostAuthor from './post-author/PostAuthor';
 import ReactionButtonPost  from './reaction-button-post/ReactionButtonPost';
 import TimeAgoPost from './time-ago-post/TimeAgoPost';
+import { selectAllPostFn } from './postSlice';
 interface Props {
   
 }
@@ -15,7 +16,7 @@ interface Props {
 const PostList: React.FC<Props> = (props) => {
 
   const history = useHistory();
-  const posts = useSelector((state: RootState) => state.posts.posts);
+  const posts = useSelector(selectAllPostFn);
   const orderSortPost = [...posts].sort( (a, b) => b.date.toString().localeCompare(a.date.toString()) )
 
   const renderPosts: JSX.Element[] = orderSortPost.map((post: Post) => (

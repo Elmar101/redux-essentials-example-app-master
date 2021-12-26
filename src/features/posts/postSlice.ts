@@ -1,13 +1,13 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
 import { Post, PostState } from './post'
-import { Reaction } from '../../model/reactions';
+import { Reaction } from '../../model/reactions'
+import { RootState } from '../../app/store'
 
 const initialState: PostState = {
   posts: [],
   status: 'idle',
   error: null,
 }
-
 
 const postSlice = createSlice({
   name: 'posts',
@@ -51,66 +51,87 @@ const postSlice = createSlice({
     //AddPostT END
 
     //UpdatePost Start
-    updatePost:{
-        reducer:(state: PostState , action: PayloadAction<Pick<Post, 'id' | 'title' |'content' | 'user'>>)=>{
-            const {id, title, content, user} = action.payload;
-            return {
-                ...state,
-                posts: state.posts.map( post => {
-                    if(post.id === id ){
-                        return {...post, id, title, content, user}
-                    }
-                    return post
-                })
+    updatePost: {
+      reducer: (
+        state: PostState,
+        action: PayloadAction<Pick<Post, 'id' | 'title' | 'content' | 'user'>>
+      ) => {
+        const { id, title, content, user } = action.payload
+        return {
+          ...state,
+          posts: state.posts.map((post) => {
+            if (post.id === id) {
+              return { ...post, id, title, content, user }
             }
-        },
-        prepare: (postId, title, content, userId )=> {
-            return {
-                payload: {
-                    id: postId,
-                    title: title,
-                    content: content,
-                    user: userId
-                }
-            }
+            return post
+          }),
         }
+      },
+      prepare: (postId, title, content, userId) => {
+        return {
+          payload: {
+            id: postId,
+            title: title,
+            content: content,
+            user: userId,
+          },
+        }
+      },
     },
     //UpdatePost END
 
     //reactionAdded START
     reactionAdded: {
-        reducer: (state: PostState , action: PayloadAction<{ postId: string; reaction: Reaction }>) => {
-            const  {postId,  reaction } = action.payload;
-            console.log("reactions: ",reaction)
-            return {
-                ...state,
-                posts: state.posts.map(post=>{
-                    if(post.id === postId){
-                        return {
-                            ...post,
-                            reactions:{
-                                ...post.reactions,
-                                [reaction]: (post.reactions[reaction] as number) + 1
-                            }
-                        }
-                    }
-                    return post;
-                })
+      reducer: (
+        state: PostState,
+        action: PayloadAction<{ postId: string; reaction: Reaction }>
+      ) => {
+        const { postId, reaction } = action.payload
+
+        console.log('reactions: ', reaction)
+        return {
+          ...state,
+          posts: state.posts.map((post) => {
+            if (post.id === postId) {
+              return {
+                ...post,
+                reactions: {
+                  ...post.reactions,
+                  [reaction]: (post.reactions[reaction] as number) + 1,
+                },
+              }
             }
-        },
-        prepare: (id: string , name: Reaction) => {
-            return {
-                payload: { postId:id,  reaction: name }
-            }
+            return post
+          }),
         }
-    }
+      },
+      prepare: (id: string, name: Reaction) => {
+        return {
+          payload: { postId: id, reaction: name },
+        }
+      },
+    },
     //reactionAdded END
   },
-
-  
 })
-export const { addPost , updatePost, reactionAdded } = postSlice.actions
+export const { addPost, updatePost, reactionAdded } = postSlice.actions
 export default postSlice.reducer
+
+//SELECT ALL POST FUNCTION
+export const selectAllPostFn: (state: RootState) => Post[] = (state: RootState) => state.posts.posts
+
+//SELECT  POST BY ID FUNCTION
+export const selectPostByIdFn: (
+  state: RootState,
+  paramsId: string
+) => Post | undefined = (state: RootState, paramsId: string) => state.posts.posts.find((post) => post.id === paramsId)
+
+
+
+
+
+
+
 
 //map bize yeni state verir
 //immer ise yox

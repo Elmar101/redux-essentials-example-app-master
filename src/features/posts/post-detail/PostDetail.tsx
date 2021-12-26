@@ -6,22 +6,23 @@ import { Post } from '../post';
 import PostAuthor from "../post-author/PostAuthor";
 import ReactionButtonPost from "../reaction-button-post/ReactionButtonPost";
 import TimeAgoPost from "../time-ago-post/TimeAgoPost";
+import { selectPostByIdFn } from "../postSlice";
 
 
 interface DetailParams {
-    postId: string;
+    paramsId: string;
 }
 interface DetailsProps {
     required: string;
     match: match<DetailParams>;
 }
 export const PostDetail: React.FC<DetailsProps> = ({match}) =>{
-    const {postId} = match.params;
-    const posts: Post[]= useSelector((state:RootState)=> state.posts.posts);
-    const post:Post | undefined = useMemo(()=>posts.find(post=> post.id === postId),[postId,posts]);
+    const {paramsId} = match.params;
+    const post: Post | undefined = useSelector((state: RootState) => selectPostByIdFn(state, paramsId));
+    //const post:Post | undefined = useMemo(()=>posts.find(post=> post.id === paramsId),[paramsId,posts]);
 
    if(!post){
-    return <i>  NOT FOUNT <b>"{postId}" </b> - postId of POST  </i>
+    return <i>  NOT FOUNT <b>"{paramsId}" </b> - paramsId of POST  </i>
    }
    
     return(
