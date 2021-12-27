@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 
 interface Props {
-    userId: string | number;
+    userId: string ;
 }
 
 const PostAuthor: React.FC<Props> = ( props ) => {

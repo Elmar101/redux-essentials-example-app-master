@@ -1,25 +1,23 @@
-import React, { ChangeEvent, useMemo, useState } from 'react'
-import { match, useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { RootState, Dispatch } from '../../../app/store'
-import { IInitialUserState } from '../../users/usersSlice'
+import React, { ChangeEvent, useState } from 'react';
+import { match, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, Dispatch } from '../../../app/store';
 import { Post } from '../post';
-import { updatePost } from '../postSlice'
+import { selectPostByIdFn, updatePost } from '../postSlice'
 interface IParamsId {
-  postId: string
+  paramsId: string
 }
 interface Props {
   match: match<IParamsId>
 }
 function EditPost({ match }: Props) {
-  const { postId } = match.params;
+  const { paramsId } = match.params;
+  console.log(paramsId)
   const history = useHistory();
 
   const dispatch: Dispatch = useDispatch();
-  const users: IInitialUserState[] = useSelector( (state: RootState) => state.users );
-  const posts: Post[] = useSelector( (state: RootState) => state.posts.posts );
-
-  const post: Post | undefined= useMemo(() =>posts.find((post)=>post.id === postId),[postId,posts]);
+  const users = useSelector( (state: RootState) => state.users );
+  const post: Post | undefined = useSelector( (state: RootState) => selectPostByIdFn(state, paramsId) );
 
   const [postObj, setPostObj] = useState({
     title: post?.title,
@@ -36,7 +34,7 @@ function EditPost({ match }: Props) {
   if (!post) {
     return (
       <i>
-        NOT FOUNT <b>"{postId}" </b> - postId of POST{' '}
+        NOT FOUNT <b>{paramsId} - edit </b> - paramsId of POST{' '}
       </i>
     )
   }
@@ -52,7 +50,7 @@ function EditPost({ match }: Props) {
     if (postObj.title && postObj.content) {
       dispatch(
         updatePost(
-          postId.toString(),
+          paramsId.toString(),
           postObj.title,
           postObj.content,
           postObj.userId
@@ -64,7 +62,7 @@ function EditPost({ match }: Props) {
 
   return (
     <div style={{ width: '50%', padding: '16px', margin: 'auto 20px' }}>
-      <i> Edit post {postId} </i>
+      <i> Edit post {paramsId} </i>
       <form>
         <label> Edit Post Title: </label>
         <input
@@ -83,6 +81,8 @@ function EditPost({ match }: Props) {
         <br />
         <label> Edit Post Content: </label>
         <textarea
+          style={{ width: '100%', padding: '16px' }}
+          rows={20}
           name="content"
           value={postObj!.content}
           onChange={handleChange}

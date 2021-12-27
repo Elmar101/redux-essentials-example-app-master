@@ -29,9 +29,9 @@ function App() {
             )}
           />
 
-          <Route exact path="/post/:postId" component={PostDetail} />
+          <Route exact path="/post/:paramsId" component={PostDetail} />
  
-          <Route exact path="/editPost/:postId" component={EditPost} /> 
+          <Route exact path="/editPost/:paramsId" component={EditPost} /> 
           <Redirect to="/" />
         </Switch>
       </div>

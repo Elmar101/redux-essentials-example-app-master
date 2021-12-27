@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Link, match } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
@@ -29,8 +29,8 @@ export const PostDetail: React.FC<DetailsProps> = ({match}) =>{
         <React.Fragment>
             <h1> {post?.id} - Post Detail </h1>
             <h3> {post?.title} </h3>
-             <PostAuthor userId={post.id}/>
-             <TimeAgoPost timeStamp={post.date}/>
+            <PostAuthor userId={post.user as string}/>
+            <TimeAgoPost timeStamp={post.date}/>
             <ReactionButtonPost post={post}/> 
             <p> {post?.content} </p>
             <Link to={`/editPost/${post.id}`}> Edit Post </Link>

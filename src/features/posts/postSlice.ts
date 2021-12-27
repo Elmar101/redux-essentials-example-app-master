@@ -1,129 +1,160 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, nanoid, createAsyncThunk, AsyncThunk, ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { Post, PostState } from './post'
 import { Reaction } from '../../model/reactions'
 import { RootState } from '../../app/store'
+import { client } from '../../api/client';
 
 const initialState: PostState = {
-  posts: [],
-  status: 'idle',
-  error: null,
+    posts: [],
+    status: 'idle',
+    error: null,
 }
+export const fetchPosts: AsyncThunk<Post[], void, {}> = createAsyncThunk('posts/fetchPosts', async () => {
+    const response = await client.get('fakeApi/posts');
+    console.log("Response", response.data)
+    return response.data as Post[];
+})
 
 const postSlice = createSlice({
-  name: 'posts',
-  initialState,
-  reducers: {
-    //AddPostT Start
+    name: 'posts',
+    initialState,
+    reducers: {
+        //AddPostT Start
 
-    addPost: {
-      reducer: (
-        state: PostState,
-        action: PayloadAction<Pick<Post, 'user' | 'title' | 'content'>>
-      ) => {
-        const { title, content, user } = action.payload
-        return {
-          ...state,
-          posts: [
-            ...state.posts,
-            {
-              id: nanoid(),
-              title,
-              content,
-              user,
-              date: new Date().toISOString(),
-              reactions: {
-                thumbsUp: 0,
-                hooray: 0,
-                heart: 0,
-                rocket: 0,
-                eyes: 0,
-              },
+        addPost: {
+            reducer: (
+                state: PostState,
+                action: PayloadAction<Pick<Post, 'user' | 'title' | 'content'>>
+            ) => {
+                const { title, content, user } = action.payload
+                return {
+                    ...state,
+                    posts: [
+                        ...state.posts,
+                        {
+                            id: nanoid(),
+                            title,
+                            content,
+                            user,
+                            date: new Date().toISOString(),
+                            reactions: {
+                                thumbsUp: 0,
+                                hooray: 0,
+                                heart: 0,
+                                rocket: 0,
+                                eyes: 0,
+                            },
+                        },
+                    ],
+                }
             },
-          ],
-        }
-      },
-      prepare: (title, content, user) => {
-        return {
-          payload: { title, content, user },
-        }
-      },
-    },
-    //AddPostT END
+            prepare: (title, content, user) => {
+                return {
+                    payload: { title, content, user },
+                }
+            },
+        },
+        //AddPostT END
 
-    //UpdatePost Start
-    updatePost: {
-      reducer: (
-        state: PostState,
-        action: PayloadAction<Pick<Post, 'id' | 'title' | 'content' | 'user'>>
-      ) => {
-        const { id, title, content, user } = action.payload
-        return {
-          ...state,
-          posts: state.posts.map((post) => {
-            if (post.id === id) {
-              return { ...post, id, title, content, user }
+        //UpdatePost Start
+        updatePost: {
+            reducer: (
+                state: PostState,
+                action: PayloadAction<Pick<Post, 'id' | 'title' | 'content' | 'user'>>
+            ) => {
+                const { id, title, content, user } = action.payload
+                return {
+                    ...state,
+                    posts: state.posts.map((post) => {
+                        if (post.id === id) {
+                            return { ...post, id, title, content, user }
+                        }
+                        return post
+                    }),
+                }
+            },
+            prepare: (postId, title, content, userId) => {
+                return {
+                    payload: {
+                        id: postId,
+                        title: title,
+                        content: content,
+                        user: userId,
+                    },
+                }
+            },
+        },
+        //UpdatePost END
+
+        //reactionAdded START
+        reactionAdded: {
+            reducer: (
+                state: PostState,
+                action: PayloadAction<{ postId: string; reaction: Reaction }>
+            ) => {
+                const { postId, reaction } = action.payload
+
+                console.log('reactions: ', reaction)
+                return {
+                    ...state,
+                    posts: state.posts.map((post) => {
+                        if (post.id === postId) {
+                            return {
+                                ...post,
+                                reactions: {
+                                    ...post.reactions,
+                                    [reaction]: (post.reactions[reaction] as number) + 1,
+                                },
+                            }
+                        }
+                        return post
+                    }),
+                }
+            },
+            prepare: (id: string, name: Reaction) => {
+                return {
+                    payload: { postId: id, reaction: name },
+                }
+            },
+        },
+        //reactionAdded END
+    },
+
+    extraReducers: (builder: ActionReducerMapBuilder<PostState>) => {
+        builder.addCase(fetchPosts.pending.toString(), (state: PostState, action: PayloadAction<PostState>) => {
+            return {
+                ...state,
+                status: 'loading'
             }
-            return post
-          }),
-        }
-      },
-      prepare: (postId, title, content, userId) => {
-        return {
-          payload: {
-            id: postId,
-            title: title,
-            content: content,
-            user: userId,
-          },
-        }
-      },
-    },
-    //UpdatePost END
 
-    //reactionAdded START
-    reactionAdded: {
-      reducer: (
-        state: PostState,
-        action: PayloadAction<{ postId: string; reaction: Reaction }>
-      ) => {
-        const { postId, reaction } = action.payload
-
-        console.log('reactions: ', reaction)
-        return {
-          ...state,
-          posts: state.posts.map((post) => {
-            if (post.id === postId) {
-              return {
-                ...post,
-                reactions: {
-                  ...post.reactions,
-                  [reaction]: (post.reactions[reaction] as number) + 1,
-                },
-              }
+        })
+        builder.addCase(fetchPosts.fulfilled.toString(), (state: PostState, action: PayloadAction<Post>) => {
+            return {
+                ...state,
+                status: 'succeeded',
+                posts: state.posts.concat(action.payload) as Post[]
             }
-            return post
-          }),
-        }
-      },
-      prepare: (id: string, name: Reaction) => {
-        return {
-          payload: { postId: id, reaction: name },
-        }
-      },
-    },
-    //reactionAdded END
-  },
+
+        })
+        builder.addCase(fetchPosts.rejected.toString(), (state: PostState, action: PayloadAction<PostState>) => {
+            return {
+                ...state,
+                status: 'failed',
+                error: action.payload.error as string
+            }
+        })
+    }
 })
 export const { addPost, updatePost, reactionAdded } = postSlice.actions
 export default postSlice.reducer
 
 //SELECT ALL POST FUNCTION
-export const selectAllPostFn: (state: RootState) => Post[] = (state: RootState) => state.posts.posts
+export const selectAllPostFn = (state: RootState) => state.posts.posts
 
 //SELECT  POST BY ID FUNCTION
 export const selectPostByIdFn: (
-  state: RootState,
-  paramsId: string
+    state: RootState,
+    paramsId: string
 ) => Post | undefined = (state: RootState, paramsId: string) => state.posts.posts.find((post) => post.id === paramsId)
 
 
