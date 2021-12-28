@@ -10,9 +10,16 @@ const initialState: PostState = {
     error: null,
 }
 export const fetchPosts: AsyncThunk<Post[], void, {}> = createAsyncThunk('posts/fetchPosts', async () => {
-    const response = await client.get('fakeApi/posts');
-    console.log("Response", response.data)
-    return response.data as Post[];
+    const result = await client.get('fakeApi/posts');
+    //console.log("Response", result.data)
+    return result.data as Post[];
+})
+
+type AddNewPostParams = Pick<Post, 'title' | 'content'> & { user: string };
+export const addNewPost = createAsyncThunk('posts/addPost',  async (_post: AddNewPostParams)=> {
+    const result = await client.post('fakeApi/posts', _post );
+    console.log('addNewPost : ',result)
+    return result.data as Post
 })
 
 const postSlice = createSlice({
@@ -21,7 +28,7 @@ const postSlice = createSlice({
     reducers: {
         //AddPostT Start
 
-        addPost: {
+        /* addPost: {
             reducer: (
                 state: PostState,
                 action: PayloadAction<Pick<Post, 'user' | 'title' | 'content'>>
@@ -53,7 +60,7 @@ const postSlice = createSlice({
                     payload: { title, content, user },
                 }
             },
-        },
+        }, */
         //AddPostT END
 
         //UpdatePost Start
@@ -143,9 +150,19 @@ const postSlice = createSlice({
                 error: action.payload.error as string
             }
         })
+
+        //addNewPost
+        builder.addCase(addNewPost.fulfilled, (state: PostState , action: PayloadAction<Post>)=> {
+            //state.posts.push(action.payload) 
+            return {
+                ...state,
+                status: 'succeeded',
+                posts: state.posts.concat(action.payload) as Post[]
+            } 
+        })
     }
 })
-export const { addPost, updatePost, reactionAdded } = postSlice.actions
+export const { /* addPost */ updatePost, reactionAdded} = postSlice.actions
 export default postSlice.reducer
 
 //SELECT ALL POST FUNCTION

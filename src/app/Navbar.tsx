@@ -10,7 +10,8 @@ export const Navbar = () => {
           <div className="navLinks"></div>
         </div>
         
-        <Link to = "/" > Posts Home Page </Link>
+        <Link to = "/" style={{marginRight:"16px"}}> Posts List </Link>
+        <Link to = "/users" > Users List </Link>
       </section>
     </nav>
   )

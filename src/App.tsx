@@ -11,6 +11,8 @@ import EditPost from './features/posts/edit-post/EditPost'
 import { PostDetail } from './features/posts/post-detail/PostDetail'
 import AddPostsToList from './features/posts/post-form/AddPostsToList'
 import PostList from './features/posts/PostList'
+import UserList from './features/users/user-list/User-List';
+import UserDetail from './features/users/user-detail/UserDetail';
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
       <Navbar />
       <div className="App">
         <Switch>
+           {/*/ Post /*/}
           <Route
             exact
             path="/"
@@ -30,8 +33,14 @@ function App() {
           />
 
           <Route exact path="/post/:paramsId" component={PostDetail} />
- 
           <Route exact path="/editPost/:paramsId" component={EditPost} /> 
+
+          {/*/ User /*/}
+
+          <Route exact path="/users" component={UserList} />
+          <Route exact path="/user/:userId" component={UserDetail} />
+
+          {/*/ Redirect to Home Page /*/}
           <Redirect to="/" />
         </Switch>
       </div>
