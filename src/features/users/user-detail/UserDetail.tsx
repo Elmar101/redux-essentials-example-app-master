@@ -38,6 +38,7 @@ const UserDetail: React.FC<DetailsProps> = ({ match }) => {
         <div>
             <h1>{userInfo.name}</h1>
             <i>{postTitles}</i>
+            
         </div>
     )
 }

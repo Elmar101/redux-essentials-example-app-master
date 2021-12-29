@@ -13,6 +13,7 @@ import AddPostsToList from './features/posts/post-form/AddPostsToList'
 import PostList from './features/posts/PostList'
 import UserList from './features/users/user-list/User-List';
 import UserDetail from './features/users/user-detail/UserDetail';
+import NotficationList from './features/notfications/NotficationList';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
 
           <Route exact path="/users" component={UserList} />
           <Route exact path="/user/:userId" component={UserDetail} />
+          <Route exact path="/notfications" component={NotficationList} />
 
           {/*/ Redirect to Home Page /*/}
           <Redirect to="/" />
