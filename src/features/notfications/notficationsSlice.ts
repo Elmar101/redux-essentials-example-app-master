@@ -16,7 +16,18 @@ export const fetchNotfications = createAsyncThunk('notfications/fetchNotfication
 const notfcationsSlice = createSlice({
     name: 'notfications',
     initialState: initialNotfications,
-    reducers:{},
+    reducers:{
+        allNotficationsRead:(state: Notfication[])=>{
+           let readNotfications = state.map(st=> {
+               return {
+                   ...st,
+                   read: true
+               }
+           })
+           return readNotfications
+          // state.forEach(st=> st.read = true)
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase( fetchNotfications.fulfilled , (state: Notfication[] , action: PayloadAction<Notfication[]>)=>{
             return state.concat(...action.payload).sort((a,b)=> b.date.localeCompare(a.date));
@@ -24,7 +35,10 @@ const notfcationsSlice = createSlice({
     }
 
 })
+//Reducer Actions
+export const { allNotficationsRead } = notfcationsSlice.actions ;
 
 export default notfcationsSlice.reducer;
 
+// Selectors
 export const selectAllNotficationFn = (state: RootState) => state.notfications;
